@@ -30,6 +30,7 @@ module.exports = {
                 country_id INT REFERENCES countries
             );
 
+
             insert into countries (name)
             values ('Afghanistan'),
             ('Albania'),
@@ -254,22 +255,25 @@ module.exports = {
    },
    getCities: (req, res) => {
     sequelize.query(`
-    SELECT cities.name AS city, rating, countries.name AS country
+    SELECT cities.city_id, cities.name AS city, cities.rating, countries.country_id, countries.name AS country
     FROM cities 
     JOIN countries
     ON cities.country_id = countries.country_id
+    ORDER BY cities DESC
     `)
     .then(dbRes => {
         res.status(200).send(dbRes[0])
     })
    },
    deleteCity: (req, res) => {
-// const {id} = req.param;
+    let {id} = req.params
+
     sequelize.query(`
-    DELETE FROM cities
-    WHERE cities.city_id = ${req.params.id};
+    DELETE 
+    FROM cities
+    WHERE city_id = ${id}
     `)
-    .then(dbRes => {
+    .then((dbRes) => {
         res.status(200).send(dbRes[0])
     })
    }
